@@ -569,7 +569,7 @@ export default function App() {
                       {row.platform && partnerSubNav === 'smartly' && (
                         <div className="shrink-0">
                           {row.platform === 'facebook'
-                            ? <img src="/Name .Sub-Components/Meta.svg" alt="Meta" className="h-4 w-4 object-contain" />
+                            ? <span className="text-[#1877F2]"><FacebookLogo size={16} /></span>
                             : <img src="/Name .Sub-Components/instagram icon.svg" alt="Instagram" className="h-4 w-4 object-contain" />
                           }
                         </div>
