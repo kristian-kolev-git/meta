@@ -270,6 +270,7 @@ export default function App() {
   const [thRows,   setThRows]   = useState<PageRow[]>(makePages(6, 'threads'))
   const [paRows,   setPaRows]   = useState<PageRow[]>(makePages(5, 'partnership'))
   const [partnerSubNav, setPartnerSubNav] = useState<'smartly' | 'facebook' | 'instagram'>('smartly')
+  const [partnerSelected, setPartnerSelected] = useState<Set<string>>(new Set())
   const [pbRows,   setPbRows]   = useState<PageRow[]>(makePages(5, 'postboosting'))
   const [appRows,  setAppRows]  = useState<AppRow[]>(makeApps())
 
@@ -526,7 +527,7 @@ export default function App() {
           )}
 
           {/* Filter row */}
-          <div className="mt-6 flex items-center gap-4">
+          <div className="mt-6 flex items-center gap-2">
             <div className="relative w-64">
               <MaterialIcon name="search" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[16px] text-muted" />
               <input
@@ -538,13 +539,25 @@ export default function App() {
               />
             </div>
             {activeTab === 'partnership' && (
-              <button
-                type="button"
-                className="ml-auto flex h-8 items-center gap-1.5 rounded-lg border border-border bg-white px-3 text-[13px] font-medium text-body hover:bg-page"
-              >
-                <MaterialIcon name="download" variant="outlined" style={{ fontSize: '16px', width: '16px', height: '16px' }} />
-                Export
-              </button>
+              <>
+                <div className="h-5 w-px bg-border" />
+              <Tooltip content={partnerSelected.size === 0 ? 'Select accounts to export' : `Export ${partnerSelected.size} account${partnerSelected.size !== 1 ? 's' : ''}`}>
+                <span className="ml-auto inline-flex">
+                  <button
+                    type="button"
+                    disabled={partnerSelected.size === 0}
+                    className={`flex h-8 items-center gap-1.5 rounded-lg border px-3 text-[13px] font-medium transition-colors ${
+                      partnerSelected.size === 0
+                        ? 'pointer-events-none border-border bg-white text-[#A3A3A3]'
+                        : 'border-border bg-white text-body hover:bg-page'
+                    }`}
+                  >
+                    <MaterialIcon name="download" variant="outlined" style={{ fontSize: '16px', width: '16px', height: '16px' }} />
+                    Export
+                  </button>
+                </span>
+              </Tooltip>
+              </>
             )}
           </div>
 
@@ -556,6 +569,20 @@ export default function App() {
               <>
                 {/* Header */}
                 <div className="flex bg-[#f5f5f5]">
+                  {activeTab === 'partnership' && (
+                    <div className="flex w-[52px] shrink-0 items-center justify-center border-r border-border py-2.5">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 cursor-pointer rounded accent-primary"
+                        checked={filteredRows.length > 0 && filteredRows.every(r => partnerSelected.has(r.id))}
+                        ref={el => { if (el) el.indeterminate = filteredRows.some(r => partnerSelected.has(r.id)) && !filteredRows.every(r => partnerSelected.has(r.id)) }}
+                        onChange={e => {
+                          if (e.target.checked) setPartnerSelected(new Set(filteredRows.map(r => r.id)))
+                          else setPartnerSelected(new Set())
+                        }}
+                      />
+                    </div>
+                  )}
                   <div className="flex-1 px-4 py-2.5 text-[13px] font-medium text-label">Page</div>
                   <div className="w-[140px] shrink-0 border-l border-border px-4 py-2.5 text-[13px] font-medium text-label">
                     Connected
@@ -565,6 +592,20 @@ export default function App() {
                 {/* Rows */}
                 {filteredRows.map((row, i) => (
                   <div key={row.id} className={`flex bg-card ${i !== filteredRows.length - 1 ? 'border-b border-border' : ''}`}>
+                    {activeTab === 'partnership' && (
+                      <div className="flex w-[52px] shrink-0 items-center justify-center border-r border-border">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 cursor-pointer rounded accent-primary"
+                          checked={partnerSelected.has(row.id)}
+                          onChange={e => {
+                            const next = new Set(partnerSelected)
+                            e.target.checked ? next.add(row.id) : next.delete(row.id)
+                            setPartnerSelected(next)
+                          }}
+                        />
+                      </div>
+                    )}
                     <div className="flex flex-1 items-center gap-3 px-4 py-3.5">
                       {row.platform && partnerSubNav === 'smartly' && (
                         <div className="shrink-0">
