@@ -367,7 +367,7 @@ export default function App() {
             <PlatformSelector />
 
             {/* Ad Account selector */}
-            <div className="w-40">
+            <div className="w-[200px]">
               <Select
                 options={AD_ACCOUNTS}
                 value={adAccount}
