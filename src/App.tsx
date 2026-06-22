@@ -495,7 +495,7 @@ export default function App() {
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
                   <path d="M5.66113 8.0255H1.31152V9.61848L10.3141 11.3886V8.0255H14.6889V6.4322L5.66113 4.61157V8.0255Z" fill="currentColor"/>
                 </svg>
-                Smartly
+                All
               </button>
               {/* Facebook */}
               <button
